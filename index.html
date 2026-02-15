@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Would You Survive? (One Problem, Many Solutions)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="icon-layer" aria-hidden="true">
+    <span>🧬</span><span>🍃</span><span>🦴</span><span>🐾</span>
+  </div>
+
+  <main class="app" aria-live="polite">
+    <header class="app-header">
+      <div>
+        <h1>Would You Survive? <span>(One Problem, Many Solutions)</span></h1>
+        <p>Choose inherited traits and test how well they fit each biological challenge.</p>
+      </div>
+      <label class="sound-toggle"><input id="soundToggle" type="checkbox" /> Sound</label>
+    </header>
+
+    <section class="progress-wrap" aria-label="Challenge progress">
+      <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <ol class="progress-steps" id="progressSteps"></ol>
+    </section>
+
+    <section id="challengeScreen" class="panel">
+      <div class="challenge-card">
+        <h2 id="challengeHeading"></h2>
+        <p id="challengeText"></p>
+      </div>
+      <p id="selectionText" class="selection-text">Select exactly 2 traits (0/2).</p>
+      <div id="traitGrid" class="trait-grid" role="group" aria-label="Trait choices"></div>
+      <div class="button-row">
+        <button id="evaluateBtn" class="btn btn-primary" disabled>Evaluate this combination</button>
+      </div>
+    </section>
+
+    <section id="feedbackScreen" class="panel hidden">
+      <h2>Feedback</h2>
+      <p id="survivalBadge" class="badge"></p>
+      <ul id="feedbackBullets" class="bullets"></ul>
+      <p id="tradeoffText" class="tradeoff"></p>
+
+      <article id="matchCard" class="match-card">
+        <div class="match-badge">MATCH!</div>
+        <div class="match-thumb" id="matchThumb" aria-hidden="true"></div>
+        <div>
+          <h3>Closest Match in Nature</h3>
+          <p id="matchName" class="match-name"></p>
+          <p id="matchExplain"></p>
+          <p id="matchFact" class="fun-fact"></p>
+        </div>
+      </article>
+
+      <div class="button-row">
+        <button id="retryBtn" class="btn">Try different traits</button>
+        <button id="nextBtn" class="btn btn-primary">Next challenge</button>
+      </div>
+    </section>
+
+    <section id="summaryScreen" class="panel hidden">
+      <h2>Results Summary</h2>
+      <table>
+        <thead><tr><th>Challenge</th><th>Traits chosen</th></tr></thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+
+      <h3>Your organism's toolkit</h3>
+      <p id="toolkitList" class="toolkit"></p>
+      <p class="evo-note">Different strategies can solve similar constraints. In each generation, individuals carrying variants that improved survival and reproduction in that context tended to contribute more offspring, so those variants became more common.</p>
+
+      <h3>Procedural creature portrait</h3>
+      <canvas id="creatureCanvas" width="1200" height="675" aria-label="Generated creature illustration"></canvas>
+      <div class="button-row">
+        <button id="downloadBtn" class="btn">Download creature image (PNG)</button>
+      </div>
+
+      <label for="imagePrompt"><strong>Image prompt (optional external generator):</strong></label>
+      <textarea id="imagePrompt" rows="8" readonly></textarea>
+
+      <h3>Rate this experience</h3>
+      <div id="emojiRow" class="emoji-row" aria-label="Satisfaction rating"></div>
+      <label for="commentsBox"><strong>Additional comments (optional)</strong></label>
+      <textarea id="commentsBox" rows="3" placeholder="Tell us what you liked or what could be improved…"></textarea>
+      <div class="button-row">
+        <button id="saveFeedbackBtn" class="btn">Save feedback</button>
+      </div>
+      <p id="thanksText" class="thanks"></p>
+      <p id="savedLocal" class="saved-local"></p>
+      <p class="contact-line">If you have any other inquiries, email noureddin2024@gmail.com<br />.</p>
+
+      <div class="button-row">
+        <button id="restartBtn" class="btn btn-primary">Play again</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
