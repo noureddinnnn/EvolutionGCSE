@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Would You Survive? (One Problem, Many Solutions)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app" aria-live="polite">
+    <header class="app-header">
+      <h1>Would You Survive? <span>(One Problem, Many Solutions)</span></h1>
+      <p>Build a fictional organism. Different inherited trait combinations can succeed under the same biological challenge.</p>
+    </header>
+
+    <section class="progress-wrap" aria-label="Challenge progress">
+      <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <ol class="progress-steps" id="progressSteps"></ol>
+    </section>
+
+    <section id="challengeScreen" class="panel">
+      <div class="challenge-card">
+        <h2 id="challengeHeading"></h2>
+        <p id="challengeText"></p>
+      </div>
+
+      <p id="selectionText" class="selection-text">Select exactly 2 traits (0/2).</p>
+      <div id="traitGrid" class="trait-grid" role="group" aria-label="Trait choices"></div>
+
+      <div class="button-row">
+        <button id="evaluateBtn" class="btn btn-primary" disabled>Evaluate this combination</button>
+      </div>
+    </section>
+
+    <section id="feedbackScreen" class="panel hidden">
+      <h2>Feedback</h2>
+      <p id="survivalBadge" class="badge"></p>
+      <ul id="feedbackBullets" class="bullets"></ul>
+      <p id="tradeoffText" class="tradeoff"></p>
+
+      <article class="match-card">
+        <h3>Closest Match in Nature</h3>
+        <p id="matchName" class="match-name"></p>
+        <p id="matchExplain"></p>
+      </article>
+
+      <div class="button-row">
+        <button id="retryBtn" class="btn">Try different traits</button>
+        <button id="nextBtn" class="btn btn-primary">Next challenge</button>
+      </div>
+    </section>
+
+    <section id="summaryScreen" class="panel hidden">
+      <h2>Results Summary</h2>
+      <table>
+        <thead>
+          <tr><th>Challenge</th><th>Traits chosen</th></tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+
+      <h3>Your organism's toolkit</h3>
+      <p id="toolkitList" class="toolkit"></p>
+
+      <p class="evo-note">Different solutions can work for the same biological problem. In populations, individuals with useful inherited variants were more likely to survive and reproduce in that context, so those variants became more common over generations.</p>
+
+      <h3>Procedural creature photo</h3>
+      <canvas id="creatureCanvas" width="780" height="420" aria-label="Generated creature illustration"></canvas>
+
+      <label for="imagePrompt"><strong>Image prompt (copy if you want to use an external image generator):</strong></label>
+      <textarea id="imagePrompt" rows="5" readonly></textarea>
+
+      <h3>Rate this experience</h3>
+      <div id="emojiRow" class="emoji-row" aria-label="Satisfaction rating"></div>
+      <p id="thanksText" class="thanks"></p>
+
+      <div class="button-row">
+        <button id="restartBtn" class="btn btn-primary">Play again</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
