@@ -3,465 +3,85 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Survive?</title>
-  <style>
-    :root {
-      --bg: #f4f8fb;
-      --panel: #ffffff;
-      --ink: #183147;
-      --muted: #4f6476;
-      --accent: #0077b6;
-      --accent-soft: #d9eef9;
-      --success: #127a3f;
-      --warn: #9a5d00;
-      --danger: #9f1d35;
-      --shadow: 0 10px 30px rgba(24, 49, 71, 0.08);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: "Segoe UI", "Inter", Arial, sans-serif;
-      background: radial-gradient(circle at top left, #eff7ff, var(--bg));
-      color: var(--ink);
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 1rem;
-    }
-
-    .app {
-      width: min(980px, 100%);
-      background: var(--panel);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      border: 1px solid #e3edf5;
-    }
-
-    header {
-      padding: 1.2rem 1.6rem;
-      background: linear-gradient(120deg, #0b5d8f, #0a7fb3);
-      color: white;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(1.6rem, 3.2vw, 2.2rem);
-      letter-spacing: 0.02em;
-    }
-
-    .subtitle {
-      margin-top: 0.45rem;
-      font-size: clamp(1rem, 2.4vw, 1.2rem);
-      line-height: 1.4;
-      max-width: 72ch;
-      opacity: 0.95;
-    }
-
-    .content {
-      padding: 1.4rem;
-    }
-
-    .challenge-card, .feedback-card {
-      background: #fbfdff;
-      border: 1px solid #e1eaf2;
-      border-radius: 16px;
-      padding: 1.2rem;
-    }
-
-    .challenge-title {
-      margin: 0 0 0.5rem;
-      font-size: clamp(1.3rem, 2.9vw, 1.8rem);
-    }
-
-    .challenge-text {
-      margin: 0.2rem 0 0.85rem;
-      font-size: clamp(1rem, 2.1vw, 1.1rem);
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .selection-info {
-      margin: 0.7rem 0 0.95rem;
-      font-weight: 600;
-      color: #0f4466;
-    }
-
-    .trait-grid {
-      display: grid;
-      gap: 0.75rem;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      margin-top: 0.9rem;
-    }
-
-    .trait-btn {
-      border: 2px solid #c5dbe8;
-      background: white;
-      color: var(--ink);
-      border-radius: 14px;
-      padding: 0.95rem;
-      text-align: left;
-      cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.2s ease;
-      min-height: 96px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 0.4rem;
-    }
-
-    .trait-btn:hover,
-    .trait-btn:focus-visible {
-      border-color: var(--accent);
-      transform: translateY(-1px);
-      outline: none;
-    }
-
-    .trait-btn.selected {
-      border-color: #065f8f;
-      background: var(--accent-soft);
-      box-shadow: inset 0 0 0 1px rgba(7, 90, 133, 0.12);
-    }
-
-    .trait-title {
-      font-weight: 700;
-      font-size: 1.02rem;
-    }
-
-    .trait-desc {
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.35;
-    }
-
-    .controls {
-      margin-top: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-    }
-
-    button.action {
-      border: none;
-      background: var(--accent);
-      color: white;
-      padding: 0.85rem 1.1rem;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    button.action.secondary {
-      background: #e5edf4;
-      color: #234057;
-    }
-
-    button.action:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .hidden { display: none; }
-
-    .result-banner {
-      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
-      font-weight: 800;
-      margin-bottom: 0.65rem;
-    }
-
-    .result-high { color: var(--success); }
-    .result-medium { color: var(--warn); }
-    .result-low { color: var(--danger); }
-
-    .feedback-body p {
-      margin: 0.5rem 0;
-      line-height: 1.45;
-      color: #244a63;
-      font-size: clamp(0.98rem, 2.2vw, 1.08rem);
-    }
-
-    .note {
-      margin-top: 1rem;
-      font-size: 0.95rem;
-      color: #486479;
-      background: #edf5fb;
-      border-left: 4px solid #82b9da;
-      padding: 0.65rem 0.8rem;
-      border-radius: 8px;
-    }
-
-    .scenario-chip {
-      display: inline-block;
-      padding: 0.35rem 0.6rem;
-      border-radius: 999px;
-      background: #e7f3fc;
-      color: #0c4f76;
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 0.6rem;
-    }
-
-    @media (max-width: 700px) {
-      header, .content { padding: 1rem; }
-      .trait-grid { grid-template-columns: 1fr; }
-      .trait-btn { min-height: 84px; }
-    }
-  </style>
+  <title>Would You Survive? (One Problem, Many Solutions)</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="app">
-    <header>
-      <h1>Would You Survive?</h1>
-      <p class="subtitle">Build a fictional organism by selecting inherited traits. Different combinations can work, but every trait has costs as well as benefits.</p>
+  <main class="app" aria-live="polite">
+    <header class="app-header">
+      <h1>Would You Survive? <span>(One Problem, Many Solutions)</span></h1>
+      <p>Build a fictional organism. Different inherited trait combinations can succeed under the same biological challenge.</p>
     </header>
 
-    <section class="content">
-      <article id="challengeView" class="challenge-card">
-        <span id="scenarioChip" class="scenario-chip"></span>
-        <h2 id="challengeTitle" class="challenge-title"></h2>
-        <p id="challengeText" class="challenge-text"></p>
-        <p id="selectionInfo" class="selection-info">Pick exactly 2 traits:</p>
-        <div id="traits" class="trait-grid"></div>
-        <div class="controls">
-          <button id="evaluateBtn" class="action" disabled>Evaluate survival</button>
-          <button id="newChallengeBtn" class="action secondary">New challenge</button>
-        </div>
+    <section class="progress-wrap" aria-label="Challenge progress">
+      <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <ol class="progress-steps" id="progressSteps"></ol>
+    </section>
+
+    <section id="challengeScreen" class="panel">
+      <div class="challenge-card">
+        <h2 id="challengeHeading"></h2>
+        <p id="challengeText"></p>
+      </div>
+
+      <p id="selectionText" class="selection-text">Select exactly 2 traits (0/2).</p>
+      <div id="traitGrid" class="trait-grid" role="group" aria-label="Trait choices"></div>
+
+      <div class="button-row">
+        <button id="evaluateBtn" class="btn btn-primary" disabled>Evaluate this combination</button>
+      </div>
+    </section>
+
+    <section id="feedbackScreen" class="panel hidden">
+      <h2>Feedback</h2>
+      <p id="survivalBadge" class="badge"></p>
+      <ul id="feedbackBullets" class="bullets"></ul>
+      <p id="tradeoffText" class="tradeoff"></p>
+
+      <article class="match-card">
+        <h3>Closest Match in Nature</h3>
+        <p id="matchName" class="match-name"></p>
+        <p id="matchExplain"></p>
       </article>
 
-      <article id="feedbackView" class="feedback-card hidden" aria-live="polite">
-        <div id="resultBanner" class="result-banner"></div>
-        <div class="feedback-body">
-          <p id="scienceSummary"></p>
-          <p id="survivalReason"></p>
-          <p id="tradeoffText"></p>
-        </div>
-        <p class="note">Evolutionary reminder: natural selection does not design traits because organisms need them. It favours inherited variation that already exists.</p>
-        <div class="controls">
-          <button id="retryBtn" class="action secondary">Try another challenge</button>
-          <button id="restartBtn" class="action">Restart game</button>
-        </div>
-      </article>
+      <div class="button-row">
+        <button id="retryBtn" class="btn">Try different traits</button>
+        <button id="nextBtn" class="btn btn-primary">Next challenge</button>
+      </div>
+    </section>
+
+    <section id="summaryScreen" class="panel hidden">
+      <h2>Results Summary</h2>
+      <table>
+        <thead>
+          <tr><th>Challenge</th><th>Traits chosen</th></tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+
+      <h3>Your organism's toolkit</h3>
+      <p id="toolkitList" class="toolkit"></p>
+
+      <p class="evo-note">Different solutions can work for the same biological problem. In populations, individuals with useful inherited variants were more likely to survive and reproduce in that context, so those variants became more common over generations.</p>
+
+      <h3>Procedural creature photo</h3>
+      <canvas id="creatureCanvas" width="780" height="420" aria-label="Generated creature illustration"></canvas>
+
+      <label for="imagePrompt"><strong>Image prompt (copy if you want to use an external image generator):</strong></label>
+      <textarea id="imagePrompt" rows="5" readonly></textarea>
+
+      <h3>Rate this experience</h3>
+      <div id="emojiRow" class="emoji-row" aria-label="Satisfaction rating"></div>
+      <p id="thanksText" class="thanks"></p>
+
+      <div class="button-row">
+        <button id="restartBtn" class="btn btn-primary">Play again</button>
+      </div>
     </section>
   </main>
 
-  <script>
-    const scenarios = [
-      {
-        id: "temperature",
-        label: "Temperature regulation",
-        title: "Challenge: Keep body temperature stable",
-        text: "Your organism lives where nights are cold and days are windy. It must avoid losing too much heat.",
-        traits: [
-          { id: "insulation", icon: "🧥", name: "Thick insulation", desc: "Dense fur or feathers trap warm air.", effect: 3, tradeoff: "Extra insulation can cause overheating in warmer periods." },
-          { id: "large_body", icon: "🐘", name: "Large body size", desc: "Lower surface area relative to volume reduces heat loss.", effect: 2, tradeoff: "Needs more food to keep such a body running." },
-          { id: "countercurrent", icon: "🩸", name: "Countercurrent blood flow", desc: "Heat from outgoing blood warms returning blood.", effect: 2, tradeoff: "Complex circulation can be costly to develop and maintain." },
-          { id: "bright_skin", icon: "🎨", name: "Bright exposed skin", desc: "Little insulation and high exposure to air.", effect: -2, tradeoff: "May help display signals, but increases heat loss." },
-          { id: "small_body", icon: "🐭", name: "Very small body", desc: "High surface area means heat escapes quickly.", effect: -2, tradeoff: "Can hide in tiny spaces, but loses heat fast." },
-          { id: "torpor", icon: "🌙", name: "Night torpor", desc: "Metabolism slows at night to reduce heat and energy demand.", effect: 1, tradeoff: "Slow responses can increase risk from sudden threats." },
-          { id: "fat_layer", icon: "🧈", name: "Fat layer", desc: "Stored fat insulates and supplies energy.", effect: 2, tradeoff: "Extra mass can reduce speed and agility." }
-        ]
-      },
-      {
-        id: "oxygen",
-        label: "Oxygen acquisition",
-        title: "Challenge: Get enough oxygen",
-        text: "Your organism is active in low-oxygen wetlands and must keep muscles supplied during movement.",
-        traits: [
-          { id: "efficient_lungs", icon: "🫁", name: "Highly folded lungs", desc: "Large gas-exchange surface boosts oxygen uptake.", effect: 3, tradeoff: "Building and maintaining this tissue uses resources." },
-          { id: "high_hemoglobin", icon: "🩸", name: "High-affinity haemoglobin", desc: "Blood binds oxygen strongly in low-oxygen air.", effect: 2, tradeoff: "Can release oxygen to tissues more slowly during intense activity." },
-          { id: "air_sacs", icon: "🎈", name: "One-way air sacs", desc: "Fresh air flows continuously over exchange surfaces.", effect: 2, tradeoff: "Complex system is vulnerable if one part is damaged." },
-          { id: "thin_skin", icon: "💧", name: "Thin moist skin", desc: "Some oxygen diffuses through skin when wet.", effect: 1, tradeoff: "Water loss risk rises outside humid conditions." },
-          { id: "thick_shell", icon: "🛡️", name: "Very thick shell", desc: "Strong protection, but little surface for gas exchange.", effect: -2, tradeoff: "Excellent defence can conflict with oxygen intake." },
-          { id: "low_activity", icon: "🐢", name: "Slow metabolism", desc: "Uses oxygen slowly, reducing demand.", effect: 1, tradeoff: "Less burst speed when escaping danger or chasing food." },
-          { id: "tiny_lungs", icon: "📦", name: "Tiny simple lungs", desc: "Limited exchange area for active life.", effect: -2, tradeoff: "Cheap to maintain, but poor oxygen delivery." }
-        ]
-      },
-      {
-        id: "predators",
-        label: "Predator avoidance",
-        title: "Challenge: Avoid being eaten",
-        text: "Your organism forages in open ground with many visual predators.",
-        traits: [
-          { id: "camouflage", icon: "🟫", name: "Camouflage pattern", desc: "Body colours blend with rocks and plants.", effect: 3, tradeoff: "Works poorly if habitat colours change." },
-          { id: "speed", icon: "💨", name: "Explosive sprint muscles", desc: "Fast escape over short distances.", effect: 2, tradeoff: "High energy demand requires frequent feeding." },
-          { id: "group_alert", icon: "👥", name: "Group alarm calls", desc: "Relatives warn each other quickly.", effect: 2, tradeoff: "Calling can reveal location if done too early." },
-          { id: "spines", icon: "🌵", name: "Protective spines", desc: "Harder for predators to bite or swallow.", effect: 2, tradeoff: "Spines are costly to produce and carry." },
-          { id: "bright_display", icon: "🌈", name: "Bright display colours", desc: "Highly visible body pattern.", effect: -2, tradeoff: "Useful in mate signalling, but easier to spot." },
-          { id: "loud_movement", icon: "🔔", name: "Noisy movement", desc: "Rustling and calls while moving.", effect: -2, tradeoff: "Could help social contact, but alerts hunters." },
-          { id: "night_vision", icon: "🌙", name: "Night vision", desc: "Active during low light when some predators hunt less effectively.", effect: 1, tradeoff: "Eye tissue is energetically expensive." }
-        ]
-      },
-      {
-        id: "resources",
-        label: "Resource competition",
-        title: "Challenge: Compete for limited food",
-        text: "Several species feed in the same area. Your organism must access food before others.",
-        traits: [
-          { id: "specialised_beak", icon: "🪶", name: "Specialised beak/jaw", desc: "Efficient at opening one hard-to-access food type.", effect: 2, tradeoff: "Excellent for one food source, weaker if that source declines." },
-          { id: "generalist_diet", icon: "🍽️", name: "Generalist digestion", desc: "Can process many food types.", effect: 2, tradeoff: "Not the best at any single source." },
-          { id: "food_storage", icon: "📦", name: "Food storage behaviour", desc: "Stores surplus food for lean periods.", effect: 2, tradeoff: "Caching takes time and can attract thieves." },
-          { id: "territorial", icon: "🚩", name: "Territorial defence", desc: "Keeps competitors away from feeding sites.", effect: 1, tradeoff: "Defence behaviour uses energy and risks injury." },
-          { id: "huge_body", icon: "🦛", name: "Huge body demand", desc: "Requires very high daily intake.", effect: -2, tradeoff: "Can dominate rivals, but food demand is heavy." },
-          { id: "slow_repro", icon: "🥚", name: "Slow reproduction", desc: "Fewer offspring reduce immediate competition among kin.", effect: 1, tradeoff: "Population recovers slowly after losses." },
-          { id: "narrow_active_time", icon: "⏰", name: "Short feeding window", desc: "Only feeds for a brief part of day.", effect: -1, tradeoff: "Avoids some competitors, but misses opportunities." }
-        ]
-      }
-    ];
-
-    const challengeView = document.getElementById("challengeView");
-    const feedbackView = document.getElementById("feedbackView");
-    const scenarioChip = document.getElementById("scenarioChip");
-    const challengeTitle = document.getElementById("challengeTitle");
-    const challengeText = document.getElementById("challengeText");
-    const traitGrid = document.getElementById("traits");
-    const selectionInfo = document.getElementById("selectionInfo");
-    const evaluateBtn = document.getElementById("evaluateBtn");
-
-    const resultBanner = document.getElementById("resultBanner");
-    const scienceSummary = document.getElementById("scienceSummary");
-    const survivalReason = document.getElementById("survivalReason");
-    const tradeoffText = document.getElementById("tradeoffText");
-
-    const newChallengeBtn = document.getElementById("newChallengeBtn");
-    const retryBtn = document.getElementById("retryBtn");
-    const restartBtn = document.getElementById("restartBtn");
-
-    let currentScenario = null;
-    let selectedTraits = [];
-
-    function pickRandomScenario() {
-      const index = Math.floor(Math.random() * scenarios.length);
-      return scenarios[index];
-    }
-
-    function startChallenge(forceDifferent = false) {
-      let next = pickRandomScenario();
-      if (forceDifferent && currentScenario && scenarios.length > 1) {
-        while (next.id === currentScenario.id) {
-          next = pickRandomScenario();
-        }
-      }
-      currentScenario = next;
-      selectedTraits = [];
-      renderChallenge();
-      challengeView.classList.remove("hidden");
-      feedbackView.classList.add("hidden");
-    }
-
-    function renderChallenge() {
-      scenarioChip.textContent = currentScenario.label;
-      challengeTitle.textContent = currentScenario.title;
-      challengeText.textContent = currentScenario.text;
-      selectionInfo.textContent = "Pick exactly 2 traits:";
-      evaluateBtn.disabled = true;
-      traitGrid.innerHTML = "";
-
-      currentScenario.traits.forEach((trait) => {
-        const button = document.createElement("button");
-        button.className = "trait-btn";
-        button.type = "button";
-        button.dataset.id = trait.id;
-        button.innerHTML = `
-          <span class="trait-title">${trait.icon} ${trait.name}</span>
-          <span class="trait-desc">${trait.desc}</span>
-        `;
-        button.addEventListener("click", () => toggleTrait(trait.id, button));
-        traitGrid.appendChild(button);
-      });
-    }
-
-    function toggleTrait(traitId, button) {
-      const isSelected = selectedTraits.includes(traitId);
-      if (isSelected) {
-        selectedTraits = selectedTraits.filter((id) => id !== traitId);
-      } else {
-        if (selectedTraits.length >= 2) {
-          return;
-        }
-        selectedTraits.push(traitId);
-      }
-
-      [...traitGrid.children].forEach((btn) => {
-        btn.classList.toggle("selected", selectedTraits.includes(btn.dataset.id));
-      });
-
-      if (selectedTraits.length < 2) {
-        selectionInfo.textContent = `Pick exactly 2 traits (${selectedTraits.length}/2 chosen).`;
-        evaluateBtn.disabled = true;
-      } else {
-        selectionInfo.textContent = "Great. You selected 2 traits.";
-        evaluateBtn.disabled = false;
-      }
-    }
-
-    function evaluateSelection() {
-      const chosen = currentScenario.traits.filter((t) => selectedTraits.includes(t.id));
-      const score = chosen.reduce((total, trait) => total + trait.effect, 0);
-
-      let survival;
-      if (score >= 4) {
-        survival = "high";
-      } else if (score >= 1) {
-        survival = "moderate";
-      } else {
-        survival = "low";
-      }
-
-      const positive = chosen.filter((t) => t.effect > 0).map((t) => t.name.toLowerCase());
-      const negative = chosen.filter((t) => t.effect < 0).map((t) => t.name.toLowerCase());
-
-      let summaryText = "";
-      if (survival === "high") {
-        summaryText = "Survival probability: high. This trait combination gives strong support for this challenge.";
-      } else if (survival === "moderate") {
-        summaryText = "Survival probability: moderate. Some inherited features help, but limits remain.";
-      } else {
-        summaryText = "Survival probability: low. These inherited features are poorly matched to this challenge.";
-      }
-
-      const helpText = positive.length
-        ? `Helpful variation: ${positive.join(" and ")} improved performance under this constraint.`
-        : "This combination offered little helpful variation for this constraint.";
-
-      const hinderText = negative.length
-        ? `Limiting variation: ${negative.join(" and ")} reduced survival in this situation.`
-        : "Neither selected trait strongly harmed survival here, so outcomes depend on context and chance.";
-
-      const tradeoffSummary = `Trade-offs: ${chosen[0].tradeoff} ${chosen[1].tradeoff} Different trait sets can also succeed because natural selection acts on existing variation in populations.`;
-
-      showFeedback(survival, summaryText, `${helpText} ${hinderText}`, tradeoffSummary);
-    }
-
-    function showFeedback(level, summary, reason, tradeoff) {
-      resultBanner.className = "result-banner";
-      if (level === "high") {
-        resultBanner.textContent = "✅ Likely to survive";
-        resultBanner.classList.add("result-high");
-      } else if (level === "moderate") {
-        resultBanner.textContent = "🟨 Survival is possible";
-        resultBanner.classList.add("result-medium");
-      } else {
-        resultBanner.textContent = "⚠️ Survival is unlikely";
-        resultBanner.classList.add("result-low");
-      }
-
-      scienceSummary.textContent = summary;
-      survivalReason.textContent = reason;
-      tradeoffText.textContent = tradeoff;
-
-      challengeView.classList.add("hidden");
-      feedbackView.classList.remove("hidden");
-    }
-
-    evaluateBtn.addEventListener("click", evaluateSelection);
-    newChallengeBtn.addEventListener("click", () => startChallenge(true));
-    retryBtn.addEventListener("click", () => startChallenge(true));
-    restartBtn.addEventListener("click", () => startChallenge(false));
-
-    startChallenge();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
